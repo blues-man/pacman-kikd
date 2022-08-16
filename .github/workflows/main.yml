@@ -2,6 +2,13 @@
 
 name: pacman-ci-action
 
+env: 
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  REGISTRY_USER: ${{ github.actor }}
+  REGISTRY_PASSWORD: ${{ github.token }}
+  APP_NAME: pacman
+  IMAGE_TAGS: 1.0.0 ${{ github.sha }}
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
@@ -39,8 +46,8 @@ jobs:
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: ghcr.io/${{ github.repository_owner }}/pacman
-          tags: 1.0.0 ${{ github.sha }}
+          image: ${{ env.IMAGE_REGISTRY }}/${{ APP_NAME }}
+          tags: ${{ env.IMAGE_TAGS }}
           containerfiles: |
             ./Dockerfile
     # https://github.com/redhat-actions/push-to-registry#readme
